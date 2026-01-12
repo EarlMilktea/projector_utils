@@ -10,3 +10,9 @@ dependencies = ["numpy"]
 
 [tool.setuptools_scm]
 version_file = "projector_utils/_version.py"
+
+[tool.uv]
+cache-keys = [
+  { file = "pyproject.toml" },
+  { git = { commit = true, tags = true } },
+]
