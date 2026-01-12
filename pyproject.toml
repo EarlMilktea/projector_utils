@@ -10,7 +10,7 @@ dynamic = ["version"]
 dependencies = ["numpy"]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-cov"]
+dev = ["mypy", "pyright", "pytest", "pytest-cov"]
 
 [tool.setuptools_scm]
 version_file = "projector_utils/_version.py"
@@ -23,3 +23,7 @@ cache-keys = [
 
 [tool.coverage.run]
 omit = ["test/**", "**/_version.py"]
+
+[tool.mypy]
+files = ["projector_utils", "tests"]
+strict = true
