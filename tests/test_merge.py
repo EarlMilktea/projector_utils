@@ -33,7 +33,7 @@ class TestGroup:
         np.testing.assert_array_equal(merge.group(arr_c, k), merge.group(arr_f, k))
 
     @pytest.mark.parametrize("k", [1, 2, 3, 4, 5])
-    def test_upgroup_fortran(self, rng: np.random.Generator, k: int) -> None:
+    def test_ungroup_fortran(self, rng: np.random.Generator, k: int) -> None:
         shape = (2, 3, 4, 5, 6)
         arr_c = merge.group(rng.random(shape), k)
         arr_f = np.asfortranarray(arr_c)
