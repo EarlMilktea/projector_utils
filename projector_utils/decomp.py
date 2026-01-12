@@ -1,0 +1,56 @@
+"""Tensor decompositions."""
+
+from __future__ import annotations
+
+from typing import Any
+
+import numpy as np
+import numpy.typing as npt
+
+from projector_utils import merge
+
+
+def tsvd(
+    arr: npt.ArrayLike, nu: int
+) -> tuple[
+    npt.NDArray[Any],
+    npt.NDArray[Any],
+    npt.NDArray[Any],
+]:
+    """Perform tensor SVD.
+
+    Args
+    ----
+    arr : array-like
+        Input array to decompose.
+    nu : int
+        First `nu` legs are included in U and the rest in V.
+
+    Returns
+    -------
+    U : ndarray
+        First `nu` legs of `arr` in the same order + a new leg appended at the end.
+    S : ndarray
+        1D array of singular values.
+    V : ndarray
+        Last `arr.ndim - nu` legs of `arr` in the same order + a new leg appended at the end.
+
+    Notes
+    -----
+    `arr` can be reconstructed by an einsum `"(A)x,x,(B)x->(A)(B)"` where `(A)` and `(B)` \
+        stand for the first `nu` legs and the rest in `arr`, respectively.
+    """
+    arr = np.asarray(arr)
+    nuc = arr.ndim - nu
+    if not (nu > 0 and nuc > 0):
+        msg = "nu must be between 1 and arr.ndim - 1."
+        raise ValueError(msg)
+    work = merge.group(arr, nuc)
+    work = work.transpose(-1, *range(work.ndim - 1))
+    work = merge.group(work, nu).T
+    u, s, vh = np.linalg.svd(work, full_matrices=False)
+    u = merge.ungroup(u.T, arr.shape[:nu])
+    u = u.transpose(*range(1, u.ndim), 0)
+    v = merge.ungroup(vh, arr.shape[nu:])
+    v = v.transpose(*range(1, v.ndim), 0)
+    return u, s, v
