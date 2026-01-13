@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, SupportsIndex
 import numpy as np
 import numpy.typing as npt
 
-from projector_utils import merge
+from trg_utils import merge
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence

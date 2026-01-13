@@ -5,7 +5,7 @@ import math
 import numpy as np
 import pytest
 
-from projector_utils import merge
+from trg_utils import merge
 
 
 class TestGroup:

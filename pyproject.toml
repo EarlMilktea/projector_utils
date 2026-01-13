@@ -3,7 +3,7 @@ requires = ["setuptools>=80", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "projector_utils"
+name = "trg_utils"
 license-files = ["LICENSE"]
 requires-python = ">=3.10,<3.15"
 dynamic = ["version"]
@@ -14,7 +14,7 @@ dev = ["mypy", "pyright", "pytest", "pytest-cov", "ruff"]
 doc = ["furo", "sphinx"]
 
 [tool.setuptools_scm]
-version_file = "projector_utils/_version.py"
+version_file = "trg_utils/_version.py"
 
 [tool.uv]
 cache-keys = [
@@ -26,7 +26,7 @@ cache-keys = [
 omit = ["tests/**", "**/_version.py"]
 
 [tool.mypy]
-files = ["projector_utils", "tests"]
+files = ["trg_utils", "tests"]
 strict = true
 
 [tool.ruff]

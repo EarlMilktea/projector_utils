@@ -6,7 +6,7 @@ performing common decompositions used in tensor workflows.
 
 from __future__ import annotations
 
-from projector_utils.decomp import tqr, tsvd
-from projector_utils.merge import group, ungroup
+from trg_utils.decomp import tqr, tsvd
+from trg_utils.merge import group, ungroup
 
 __all__ = ["group", "tqr", "tsvd", "ungroup"]

@@ -7,7 +7,7 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-from projector_utils import decomp
+from trg_utils import decomp
 
 
 def _perm(arr: npt.NDArray[Any], i0: tuple[int, ...], i1: tuple[int, ...]) -> list[int]:

@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path("..").resolve()))
 
-project = "projector_utils"
+project = "trg_utils"
 author = "EarlMilktea"
 copyright = f"2025, {author}"  # noqa: A001
 
