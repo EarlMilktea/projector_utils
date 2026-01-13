@@ -17,13 +17,13 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
 
 
-def _index_normalize(arr: npt.NDArray[Any], seq: Sequence[SupportsIndex]) -> tuple[int, ...]:
+def _index_normalize(d: int, seq: Sequence[SupportsIndex]) -> tuple[int, ...]:
     def _it() -> Iterator[int]:
         for i_ in seq:
             i = operator.index(i_)
             if i < 0:
-                i += arr.ndim
-            if not (0 <= i < arr.ndim):
+                i += d
+            if not (0 <= i < d):
                 msg = f"Index {i_} is out of range."
                 raise ValueError(msg)
             yield i
@@ -31,11 +31,11 @@ def _index_normalize(arr: npt.NDArray[Any], seq: Sequence[SupportsIndex]) -> tup
     return tuple(_it())
 
 
-def _index_sanitize(arr: npt.NDArray[Any], i0: tuple[int, ...], i1: tuple[int, ...]) -> None:
+def _index_sanitize(d: int, i0: tuple[int, ...], i1: tuple[int, ...]) -> None:
     if not (i0 and i1):
         msg = "Each index must not be empty."
         raise ValueError(msg)
-    ref = list(range(arr.ndim))
+    ref = list(range(d))
     work = [*i0, *i1]
     work.sort()
     if work != ref:
@@ -67,9 +67,10 @@ def tsvd(
         Axes from ``iv`` in the same order plus a new axis appended at the end.
     """
     arr = np.asarray(arr)
-    iu = _index_normalize(arr, iu)
-    iv = _index_normalize(arr, iv)
-    _index_sanitize(arr, iu, iv)
+    d = arr.ndim
+    iu = _index_normalize(d, iu)
+    iv = _index_normalize(d, iv)
+    _index_sanitize(d, iu, iv)
     work = arr.transpose(*iu, *iv)
     nu = len(iu)
     # merge from back
@@ -106,9 +107,10 @@ def tqr(
         Axes from ``ir`` in the same order plus a new axis appended at the end.
     """
     arr = np.asarray(arr)
-    iq = _index_normalize(arr, iq)
-    ir = _index_normalize(arr, ir)
-    _index_sanitize(arr, iq, ir)
+    d = arr.ndim
+    iq = _index_normalize(d, iq)
+    ir = _index_normalize(d, ir)
+    _index_sanitize(d, iq, ir)
     work = arr.transpose(*iq, *ir)
     nq = len(iq)
     work = merge.group(work, nq, work.ndim)
