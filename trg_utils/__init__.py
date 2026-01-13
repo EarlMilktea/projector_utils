@@ -1,7 +1,6 @@
-"""Utilities for tensor axis manipulation and decomposition.
+"""Simple utilities for working with tensor renormalization groups.
 
-This package provides NumPy-based helpers for reshaping tensor axes and
-performing common decompositions used in tensor workflows.
+This package provides various utilities for tensor manipulations, which are slightly beyond basic NumPy operations.
 """
 
 from __future__ import annotations
