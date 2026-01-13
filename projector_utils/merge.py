@@ -1,4 +1,7 @@
-"""Utilities to group and ungroup tensor axes."""
+"""Grouping and ungrouping of array axes.
+
+This module provides functions to merge or split array axes without changing the C-like memory layout.
+"""
 
 from __future__ import annotations
 

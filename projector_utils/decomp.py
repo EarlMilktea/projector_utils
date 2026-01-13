@@ -1,4 +1,7 @@
-"""Tensor decomposition utilities."""
+"""Tensor decompositions.
+
+This module provides functions to perform tensor decompositions such as SVD and QR.
+"""
 
 from __future__ import annotations
 
