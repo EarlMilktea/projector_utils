@@ -7,13 +7,24 @@ from __future__ import annotations
 
 import math
 import operator
-from typing import TYPE_CHECKING, Any, SupportsIndex
+import typing
+from typing import TYPE_CHECKING, Any, SupportsIndex, TypeVar
 
 import numpy as np
 import numpy.typing as npt
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+_T = TypeVar("_T", bound=np.generic)
+
+
+@typing.overload
+def group(arr: npt.NDArray[_T], begin: SupportsIndex, end: SupportsIndex) -> npt.NDArray[_T]: ...
+
+
+@typing.overload
+def group(arr: npt.ArrayLike, begin: SupportsIndex, end: SupportsIndex) -> npt.NDArray[Any]: ...
 
 
 def group(arr: npt.ArrayLike, begin: SupportsIndex, end: SupportsIndex) -> npt.NDArray[Any]:
@@ -55,6 +66,14 @@ def group(arr: npt.ArrayLike, begin: SupportsIndex, end: SupportsIndex) -> npt.N
         msg = "begin and end must satisfy 0 <= begin < end <= arr.ndim after normalization."
         raise ValueError(msg)
     return arr.reshape(*arr.shape[:begin], -1, *arr.shape[end:])
+
+
+@typing.overload
+def ungroup(arr: npt.NDArray[_T], target: SupportsIndex, split: Sequence[SupportsIndex]) -> npt.NDArray[_T]: ...
+
+
+@typing.overload
+def ungroup(arr: npt.ArrayLike, target: SupportsIndex, split: Sequence[SupportsIndex]) -> npt.NDArray[Any]: ...
 
 
 def ungroup(arr: npt.ArrayLike, target: SupportsIndex, split: Sequence[SupportsIndex]) -> npt.NDArray[Any]:
