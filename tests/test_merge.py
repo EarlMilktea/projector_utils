@@ -1,41 +1,51 @@
 from __future__ import annotations
 
+import math
+
 import numpy as np
 import pytest
 
-from projector_utils import merge
+from trg_utils import merge
 
 
 class TestGroup:
-    def test_group_ng(self) -> None:
-        with pytest.raises(ValueError, match=r".*between 1.*"):
-            merge.group(np.eye(3), 0)
+    @pytest.mark.parametrize(("begin", "end"), [(-4, 1), (2, 2), (0, 4)])
+    def test_group_ng(self, begin: int, end: int) -> None:
+        with pytest.raises(ValueError, match=r"begin and end must satisfy"):
+            merge.group(np.zeros((2, 3, 4)), begin, end)
 
-    def test_ungroup_ng(self) -> None:
-        with pytest.raises(ValueError, match=r".*3 -> \(2, 2\).*"):
-            merge.ungroup(np.eye(3), (2, 2))
+    @pytest.mark.parametrize("target", [-4, 3])
+    def test_ungroup_ng_dim(self, target: int) -> None:
+        with pytest.raises(ValueError, match=r"target must be between"):
+            merge.ungroup(np.zeros((2, 3, 4)), target, (2, 2))
 
-    @pytest.mark.parametrize("k", [1, 2, 3, 4, 5])
-    def test_gug(self, rng: np.random.Generator, k: int) -> None:
-        shape = (2, 3, 4, 5, 6)
-        arr0 = rng.random(shape)
-        arr1 = merge.group(arr0, k)
-        arr2 = merge.ungroup(arr1, shape[-k:])
-        np.testing.assert_array_equal(arr0, arr2)
-        arr3 = merge.group(arr2, k)
-        np.testing.assert_array_equal(arr1, arr3)
+    def test_ungroup_ng_shape(self) -> None:
+        with pytest.raises(ValueError, match=r"Cannot ungroup: 4 -> \(2, 3\)\."):
+            merge.ungroup(np.zeros((2, 3, 4)), 2, (2, 3))
 
-    @pytest.mark.parametrize("k", [1, 2, 3, 4, 5])
-    def test_group_fortran(self, rng: np.random.Generator, k: int) -> None:
-        shape = (2, 3, 4, 5, 6)
-        arr_c = rng.random(shape)
-        arr_f = np.asfortranarray(arr_c)
-        np.testing.assert_array_equal(merge.group(arr_c, k), merge.group(arr_f, k))
+    @pytest.mark.parametrize(
+        ("begin", "end"),
+        [(0, 2), (1, 4), (-3, -1), (4, 5), (0, 1), (0, 5)],
+    )
+    def test_group(self, begin: int, end: int) -> None:
+        arr = np.arange(120).reshape(1, 2, 3, 4, 5)
+        res = merge.group(arr, begin, end)
+        eshape: list[int] = list(arr.shape)
+        begin = begin + arr.ndim if begin < 0 else begin
+        end = end + arr.ndim if end < 0 else end
+        eshape[begin:end] = [math.prod(arr.shape[begin:end])]
+        assert res.shape == tuple(eshape)
+        np.testing.assert_array_equal(res.ravel(), arr.ravel())
 
-    @pytest.mark.parametrize("k", [1, 2, 3, 4, 5])
-    def test_ungroup_fortran(self, rng: np.random.Generator, k: int) -> None:
-        shape = (2, 3, 4, 5, 6)
-        arr_c = merge.group(rng.random(shape), k)
-        arr_f = np.asfortranarray(arr_c)
-        shape_ = shape[-k:]
-        np.testing.assert_array_equal(merge.ungroup(arr_c, shape_), merge.ungroup(arr_f, shape_))
+    @pytest.mark.parametrize(
+        ("target", "split"),
+        [(0, (1, 1)), (1, (1, 2)), (2, (3,)), (3, (2, 1, 2)), (4, (5,)), (-1, (1, 5))],
+    )
+    def test_ungroup(self, target: int, split: tuple[int, ...]) -> None:
+        arr = np.arange(120).reshape(1, 2, 3, 4, 5)
+        res = merge.ungroup(arr, target, split)
+        eshape: list[int] = list(arr.shape)
+        target = target + arr.ndim if target < 0 else target
+        eshape[target : target + 1] = list(split)
+        assert res.shape == tuple(eshape)
+        np.testing.assert_array_equal(res.ravel(), arr.ravel())

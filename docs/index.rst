@@ -1,10 +1,10 @@
-projector_utils
-===============
+trg_utils
+=========
 
-Utilities for tensor axis manipulation and decomposition.
+Utilities for tensor renormalization groups.
 
 API Reference
 -------------
 
-.. automodule:: projector_utils
+.. automodule:: trg_utils
    :members:
