@@ -9,9 +9,4 @@ from __future__ import annotations
 from projector_utils.decomp import tqr, tsvd
 from projector_utils.merge import group, ungroup
 
-__all__ = [
-    "group",
-    "tqr",
-    "tsvd",
-    "ungroup",
-]
+__all__ = ["group", "tqr", "tsvd", "ungroup"]
