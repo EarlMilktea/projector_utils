@@ -42,7 +42,7 @@ def group(arr: npt.ArrayLike, k: int) -> npt.NDArray[Any]:
     The merged axis preserves C-order (row-major) element ordering of the
     original trailing axes.
     """
-    arr = np.ascontiguousarray(arr)
+    arr = np.asarray(arr)
     if not (0 < k <= arr.ndim):
         msg = "k must be between 1 and arr.ndim."
         raise ValueError(msg)
@@ -74,7 +74,7 @@ def ungroup(arr: npt.ArrayLike, split: Sequence[SupportsIndex]) -> npt.NDArray[A
     The split uses C-order (row-major) when expanding the last axis into
     ``split``.
     """
-    arr = np.ascontiguousarray(arr)
+    arr = np.asarray(arr)
     split = tuple(operator.index(i) for i in split)
     nl = int(arr.shape[-1])
     if nl != math.prod(split):  # type: ignore[arg-type]
